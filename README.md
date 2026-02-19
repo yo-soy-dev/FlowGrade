@@ -1,440 +1,405 @@
-# 📚 Assignment Submission System
+<!--
+ ███████╗██╗      ██████╗ ██╗    ██╗ ██████╗ ██████╗  █████╗ ██████╗ ███████╗
+ ██╔════╝██║     ██╔═══██╗██║    ██║██╔════╝ ██╔══██╗██╔══██╗██╔══██╗██╔════╝
+ █████╗  ██║     ██║   ██║██║ █╗ ██║██║  ███╗██████╔╝███████║██║  ██║█████╗
+ ██╔══╝  ██║     ██║   ██║██║███╗██║██║   ██║██╔══██╗██╔══██║██║  ██║██╔══╝
+ ██║     ███████╗╚██████╔╝╚███╔███╔╝╚██████╔╝██║  ██║██║  ██║██████╔╝███████╗
+ ╚═╝     ╚══════╝ ╚═════╝  ╚══╝╚══╝  ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═════╝ ╚══════╝
+-->
 
-> A role-based platform for managing assignment workflows between mentors and students, built for Mentneo's internal operations.
-
----
-
-## 📋 Overview
-
-The **Assignment Submission System** streamlines the complete lifecycle of assignment management—from creation to submission to review. Built with production-grade security and workflow enforcement, it provides a centralized hub for educational content management with clear role separation and state management.
-
----
-
-## ✨ Key Features
-
-### 🔐 Authentication & Authorization
-- Secure user registration and JWT-based authentication
-- Role-based access control (RBAC) with two distinct roles:
-  - **Mentor**: Assignment creators and reviewers
-  - **Student**: Assignment submitters
-- All permissions enforced at the API level with middleware validation
-
-### 📊 Assignment Lifecycle Management
-
-The system enforces a strict **three-state workflow**:
+<div align="center">
 
 ```
-┌─────────┐    Student     ┌───────────┐    Mentor      ┌──────────┐
-│ Pending │  ─────────────>│ Submitted │ ──────────────>│ Reviewed │
-└─────────┘    submits      └───────────┘    reviews     └──────────┘
+╔╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╗
+╠╣                                                               ╠╣
+╠╣   🎓  F L O W G R A D E                                      ╠╣
+╠╣      ═══════════════════════════════════════════              ╠╣
+╠╣      Assign. Submit. Review. Done.                            ╠╣
+╠╣      Role-based assignment workflow for Mentneo.             ╠╣
+╠╣                                                               ╠╣
+╚╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╝
 ```
 
-**State Definitions:**
-- **Pending**: Initial state when mentor creates assignment
-- **Submitted**: Student uploads required materials
-- **Reviewed**: Mentor completes evaluation
+[![React](https://img.shields.io/badge/React_18-000000?style=for-the-badge&logo=react&logoColor=61DAFB)](https://react.dev)
+[![TypeScript](https://img.shields.io/badge/TypeScript-000000?style=for-the-badge&logo=typescript&logoColor=3178C6)](https://typescriptlang.org)
+[![Node.js](https://img.shields.io/badge/Node.js-000000?style=for-the-badge&logo=node.js&logoColor=339933)](https://nodejs.org)
+[![MongoDB](https://img.shields.io/badge/MongoDB-000000?style=for-the-badge&logo=mongodb&logoColor=47A248)](https://mongodb.com)
+[![Vite](https://img.shields.io/badge/Vite-000000?style=for-the-badge&logo=vite&logoColor=646CFF)](https://vitejs.dev)
 
-> ⚠️ Invalid state transitions are rejected by backend validation.
+**[What It Is](#-what-it-is) · [Workflow](#-assignment-lifecycle) · [Roles](#-roles--permissions) · [Stack](#-stack) · [Spin It Up](#-spin-it-up) · [API](#-api-reference) · [Security](#-security)**
 
----
-
-### 👨‍🏫 Mentor Capabilities
-
-| Feature | Status |
-|---------|--------|
-| Create assignments with title, description, and optional deadlines | ✅ Enabled |
-| View all student submissions across assignments | ✅ Enabled |
-| Mark submissions as reviewed | ✅ Enabled |
-| Track submission progress and completion rates | ✅ Enabled |
-| Submit assignments | ❌ Restricted |
-
-### 👨‍🎓 Student Capabilities
-
-| Feature | Status |
-|---------|--------|
-| View all assigned assignments | ✅ Enabled |
-| Submit multi-file assignments (PDF/DOC/DOCX, Images, Videos) | ✅ Enabled |
-| Track submission status in real-time | ✅ Enabled |
-| Review submissions | ❌ Restricted |
-
-**Supported File Types for Submission:**
-- 📄 Text document (PDF or DOC/DOCX)
-- 🖼️ Image file (JPG, PNG, GIF, etc.)
-- 🎥 Video file (MP4, MOV, AVI, etc.)
+</div>
 
 ---
 
-## 🛠 Tech Stack
+## ❯ What It Is
 
-<table>
-<tr>
-<td width="50%">
-
-### Frontend
-- **Framework**: React 18
-- **Language**: TypeScript
-- **Build Tool**: Vite
-- **HTTP Client**: Axios
-- **State Management**: React Context API
-- **Routing**: React Router v6
-
-</td>
-<td width="50%">
-
-### Backend
-- **Runtime**: Node.js
-- **Framework**: Express.js
-- **Architecture**: RESTful API
-- **Authentication**: JWT (JSON Web Tokens)
-- **File Handler**: Multer
-- **Database**: MongoDB / PostgreSQL
-
-</td>
-</tr>
-</table>
-
-### 🗄️ Database Schema
-- **Collections/Tables**: Users, Assignments, Submissions, File Metadata
-- **Relationships**: User ↔ Assignments ↔ Submissions
-
-### 📁 File Management
-- **Upload Handler**: Multer
-- **Storage**: Local filesystem (extensible to AWS S3/Cloudinary)
-- **Validation**: Type checking, size limits, sanitization
-
----
-
-## 📡 API Reference
-
-### 🔑 Authentication Endpoints
-| Method | Endpoint | Description | Auth Required |
-|--------|----------|-------------|:-------------:|
-| `POST` | `/api/auth/register` | Register new user | ❌ |
-| `POST` | `/api/auth/login` | Login and receive JWT | ❌ |
-
-### 📝 Assignment Endpoints (Mentor Only)
-| Method | Endpoint | Description | Auth Required |
-|--------|----------|-------------|:-------------:|
-| `POST` | `/api/assignments` | Create new assignment | ✅ Mentor |
-| `GET` | `/api/assignments` | List all assignments | ✅ Mentor |
-| `GET` | `/api/assignments/student` | Get student-specific assignments | ✅ Student |
-| `GET` | `/api/assignments/:id` | Get assignment details | ✅ Mentor |
-
-### 📤 Submission Endpoints
-| Method | Endpoint | Description | Auth Required |
-|--------|----------|-------------|:-------------:|
-| `POST` | `/api/submissions/assignment/:assignmentId` | Submit assignment files | ✅ Student |
-| `GET` | `/api/submissions/my/:assignmentId` | View own submissions | ✅ Student |
-| `GET` | `/api/submissions/:id` | View submission details | ✅ Student |
-| `GET` | `/api/submissions` | View all student submissions | ✅ Mentor |
-| `PATCH` | `/api/submissions/:id/review` | Mark submission as reviewed | ✅ Mentor |
-
----
-
-## 📁 Project Structure
+Flowgrade is a **role-based assignment workflow platform** built for Mentneo's internal operations. Mentors create assignments, students submit multi-file work, and mentors review — all enforced by a strict three-state lifecycle with role guards at every API endpoint.
 
 ```
-assignment-submission-system/
+╔╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╗
+╠╣  Mentor creates assignment  →  Status: PENDING                 ╠╣
+╠╣  Student uploads files      →  Status: SUBMITTED              ╠╣
+╠╣  Mentor reviews work        →  Status: REVIEWED               ╠╣
+╠╣  Invalid transitions        →  400 / 403 blocked at API       ╠╣
+╚╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╝
+```
+
+---
+
+## ◈ Assignment Lifecycle
+
+```
+  ┌─────────────┐       Student        ┌─────────────┐       Mentor
+  │             │      submits         │             │      reviews
+  │   PENDING   │ ───────────────────▶ │  SUBMITTED  │ ──────────────▶  REVIEWED
+  │             │                      │             │
+  │  Created by │                      │  Files      │
+  │   Mentor    │                      │  uploaded   │
+  └─────────────┘                      └─────────────┘
+
+  ❌  Pending  ──▶  Reviewed    (skip not allowed — 400 Bad Request)
+  ❌  Student  creates assignment        (403 Forbidden)
+  ❌  Mentor   submits assignment        (403 Forbidden)
+  ❌  Student  reviews submission        (403 Forbidden)
+```
+
+---
+
+## ◈ Roles & Permissions
+
+```
+FLOWGRADE  /  ROLES
 │
-├── client/                        # Frontend React + TypeScript
-│   ├── node_modules/
-│   ├── public/
-│   ├── src/
-│   │   ├── api/                   # API integration layer
-│   │   │   ├── assignment.api.ts
-│   │   │   ├── auth.api.ts
-│   │   │   ├── axios.ts
-│   │   │   └── submission.api.ts
-│   │   ├── assets/                # Static assets
-│   │   │   └── react.svg
-│   │   ├── components/            # Reusable UI components
-│   │   │   ├── ProtectedRoute.tsx
-│   │   │   ├── Sidebar.tsx
-│   │   │   ├── Navbar.tsx
-│   │   │   ├── Footer.tsx
-│   │   │   └── AppLayout.tsx
-│   │   ├── context/               # React context providers
-│   │   │   └── AuthContext.tsx
-│   │   ├── pages/                 # Application pages
-│   │   │   ├── AssignmentSubmissions.tsx
-│   │   │   ├── CreateAssignment.tsx
-│   │   │   ├── Login.tsx
-│   │   │   ├── MentorDashboard.tsx
-│   │   │   ├── Register.tsx
-│   │   │   ├── ReviewSubmission.tsx
-│   │   │   ├── StudentDashboard.tsx
-│   │   │   └── SubmitAssignment.tsx
-│   │   ├── App.tsx                # Main application component
-│   │   ├── index.css              # Global styles
-│   │   └── main.tsx               # Application entry point
-│   ├── .gitignore
-│   ├── eslint.config.js
-│   ├── package.json
-│   └── package-lock.json
+├── 👨‍🏫  MENTOR
+│   ├── Create assignments (title, description, deadline)
+│   ├── View all student submissions
+│   ├── Mark submissions as reviewed
+│   ├── Track submission progress + completion rates
+│   └── ❌ Cannot submit assignments
 │
-├── server/                        # Backend Node.js + Express
-│   ├── node_modules/
-│   ├── src/
-│   │   ├── config/                # Configuration files
-│   │   ├── controllers/           # Business logic and request handlers
-│   │   │   ├── assignment.controller.js
-│   │   │   ├── auth.controller.js
-│   │   │   └── submission.controller.js
-│   │   ├── middleware/            # Authentication & authorization
-│   │   │   ├── auth.middleware.js
-│   │   │   ├── role.middleware.js
-│   │   │   └── upload.js
-│   │   ├── models/                # Database schemas
-│   │   │   ├── Assignment.js
-│   │   │   ├── Submission.js
-│   │   │   └── User.js
-│   │   ├── routes/                # API route definitions
-│   │   │   ├── assignment.route.js
-│   │   │   ├── auth.route.js
-│   │   │   └── submission.route.js
-│   │   ├── scripts/               # Utility scripts
-│   │   │   └── createAdmin.js
-│   │   └── server.js              # Application entry point
-│   ├── .env                       # Environment variables
-│   ├── .gitignore
-│   ├── package.json
-│   ├── package-lock.json
-│   └── vercel.json
-│
-└── README.md
+└── 👨‍🎓  STUDENT
+    ├── View all assigned assignments
+    ├── Submit multi-file work (PDF/Doc + Image + Video)
+    ├── Track own submission status in real-time
+    └── ❌ Cannot create or review assignments
 ```
+
+| Action | Mentor | Student |
+|--------|:------:|:-------:|
+| Create assignment | ✅ | ❌ |
+| Submit files | ❌ | ✅ |
+| View all submissions | ✅ | ❌ |
+| View own submissions | ❌ | ✅ |
+| Mark as reviewed | ✅ | ❌ |
 
 ---
 
-## 🚀 Getting Started
+## ◈ File Uploads
+
+```
+Per Submission — max 3 files (1 of each type)
+│
+├── 📄  DOCUMENT     PDF · DOC · DOCX
+├── 🖼️  IMAGE        JPG · JPEG · PNG · GIF
+└── 🎥  VIDEO        MP4 · MOV · AVI
+
+Limits
+├── Max per file  →  10 MB (configurable via MAX_FILE_SIZE)
+└── Max total     →  30 MB per submission
+```
+
+Files stored in `server/uploads/` with unique generated filenames. Metadata (path, type, size) saved in DB linked to submission ID. Extensible to AWS S3 or Cloudinary.
+
+---
+
+## ◈ Stack
+
+### System Map
+
+```
+     ╔══════════════════════════════════════╗
+     ║          Browser / Client            ║
+     ║   React 18 + TypeScript + Vite       ║
+     ║   React Router v6 + Context API      ║
+     ╚══════════════╤═══════════════════════╝
+                    │  Axios + JWT header
+     ╔══════════════▼═══════════════════════╗
+     ║          Express Server              ║
+     ║          Node.js                     ║
+     ║          auth.middleware.js           ║
+     ║          role.middleware.js           ║
+     ║          upload.js (Multer)           ║
+     ╚══════╤═══════════════╤═══════════════╝
+            │               │
+     ┌──────┘          ┌────┘
+     ▼                 ▼
+╔══════════╗     ╔═══════════════╗
+║ MongoDB  ║     ║  Local FS     ║
+║ ───────  ║     ║  ───────────  ║
+║ Users    ║     ║  uploads/     ║
+║ Assigns  ║     ║  (→ S3 ready) ║
+║ Submits  ║     ╚═══════════════╝
+╚══════════╝
+```
+
+### At a Glance
+
+| Layer | Technology | Role |
+|-------|-----------|------|
+| **Frontend** | React 18 + TypeScript | Dashboard UI, forms, routing |
+| **Bundler** | Vite | Dev server + production builds |
+| **HTTP** | Axios | JWT-authenticated API calls |
+| **Backend** | Node.js + Express | REST API + role enforcement |
+| **Database** | MongoDB + Mongoose | Users, assignments, submissions |
+| **Auth** | JWT + bcrypt | Stateless auth + password hashing |
+| **File Upload** | Multer | Multipart handling + validation |
+
+---
+
+## ◈ Spin It Up
 
 ### Prerequisites
-Ensure you have the following installed:
-- ✅ **Node.js** (v16 or higher)
-- ✅ **npm** or **yarn**
-- ✅ **MongoDB** (v5+) or **PostgreSQL** (v13+)
 
----
+Node.js v16+, npm or yarn, MongoDB v5+ (local or Atlas)
 
-### ⚙️ Installation
+### Backend
 
-#### 1️⃣ Clone the Repository
 ```bash
+# 1 — Clone
 git clone <repository-url>
 cd assignment-submission-system
-```
 
-#### 2️⃣ Backend Setup
-```bash
+# 2 — Install + configure
 cd server
 npm install
+cp .env.example .env      # fill in your values
+
+# 3 — Start
+npm run dev               # → http://localhost:5000
 ```
 
-**Create a `.env` file** in the `server` directory:
-```env
-# Server Configuration
-PORT=5000
-NODE_ENV=development
+### Frontend
 
-# Database Configuration (Choose one)
-MONGODB_URI=mongodb://localhost:27017/assignment_system
-# DATABASE_URL=postgresql://user:password@localhost:5432/assignment_system
-
-# Cloudinary Configuration (Optional for cloud storage)
-CLOUDINARY_CLOUD_NAME=your_cloud_name
-CLOUDINARY_API_KEY=your_api_key
-CLOUDINARY_API_SECRET=your_api_secret
-
-# JWT Authentication
-JWT_SECRET=your_super_secret_key_change_in_production
-JWT_EXPIRE=7d
-
-# File Upload Settings
-MAX_FILE_SIZE=10485760
-UPLOAD_PATH=./uploads
-```
-
-**Start the backend server:**
-```bash
-npm run dev
-```
-> 🌐 The API will be available at `http://localhost:5000`
-
-#### 3️⃣ Frontend Setup
 ```bash
 cd client
 npm install
+npm run dev               # → http://localhost:5173
 ```
 
-**Create a `.env` file** in the `client` directory:
+### Tests
+
+```bash
+cd server && npm test     # Backend tests
+cd client && npm test     # Frontend tests
+```
+
+---
+
+## ◈ Environment Variables
+
+### Backend — `server/.env`
+
+```env
+# ── Server ────────────────────────────────────────────────────────
+PORT=5000
+NODE_ENV=development
+
+# ── Database (choose one) ─────────────────────────────────────────
+MONGODB_URI=mongodb://localhost:27017/flowgrade
+# DATABASE_URL=postgresql://user:password@localhost:5432/flowgrade
+
+# ── Auth ──────────────────────────────────────────────────────────
+JWT_SECRET=your_super_secret_key                    # server-only
+JWT_EXPIRE=7d
+
+# ── File Uploads ──────────────────────────────────────────────────
+MAX_FILE_SIZE=10485760                              # 10MB in bytes
+UPLOAD_PATH=./uploads
+
+# ── Cloudinary (optional — for cloud storage) ─────────────────────
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret              # server-only
+```
+
+| Variable | Required | Default |
+|----------|:--------:|---------|
+| `MONGODB_URI` or `DATABASE_URL` | ✅ one of | — |
+| `JWT_SECRET` | ✅ | — |
+| `PORT` | ❌ | 5000 |
+| `JWT_EXPIRE` | ❌ | 7d |
+| `MAX_FILE_SIZE` | ❌ | 10485760 |
+| `UPLOAD_PATH` | ❌ | ./uploads |
+| Cloudinary vars | ❌ | local storage |
+
+### Frontend — `client/.env`
+
 ```env
 VITE_API_URL=http://localhost:5000/api
 ```
 
-**Start the development server:**
-```bash
-npm run dev
+> ⚠️ Vite requires the `VITE_` prefix for all env vars exposed to the browser.
+
+---
+
+## ◈ API Reference
+
+### Auth
+
+| Method | Endpoint | Description | Access |
+|--------|----------|-------------|--------|
+| `POST` | `/api/auth/register` | Register new user | Public |
+| `POST` | `/api/auth/login` | Login → returns JWT | Public |
+
+### Assignments
+
+| Method | Endpoint | Description | Access |
+|--------|----------|-------------|--------|
+| `POST` | `/api/assignments` | Create assignment | Mentor |
+| `GET` | `/api/assignments` | List all assignments | Mentor |
+| `GET` | `/api/assignments/student` | Student's assignments | Student |
+| `GET` | `/api/assignments/:id` | Assignment details | Mentor |
+
+### Submissions
+
+| Method | Endpoint | Description | Access |
+|--------|----------|-------------|--------|
+| `POST` | `/api/submissions/assignment/:id` | Submit files | Student |
+| `GET` | `/api/submissions/my/:assignmentId` | Own submissions | Student |
+| `GET` | `/api/submissions/:id` | Submission detail | Student |
+| `GET` | `/api/submissions` | All submissions | Mentor |
+| `PATCH` | `/api/submissions/:id/review` | Mark reviewed | Mentor |
+
+---
+
+## ◈ Security
+
+| Layer | Implementation |
+|-------|---------------|
+| **Auth** | JWT stateless tokens |
+| **Passwords** | bcrypt with salt rounds |
+| **Role Guards** | `role.middleware.js` on every protected route |
+| **Input Validation** | express-validator on all request bodies |
+| **File Validation** | Whitelist-based type + size checking via Multer |
+| **Injection Protection** | Parameterized queries + payload sanitization |
+| **CORS** | Configured allowed origins |
+
+---
+
+## ◈ Project Structure
+
 ```
-> 🌐 The application will be available at `http://localhost:5173`
-
----
-
-## 🔒 Security Features
-
-| Feature | Description |
-|---------|-------------|
-| 🔐 **JWT Authentication** | Stateless token-based authentication |
-| 🔑 **Password Hashing** | bcrypt with salt rounds for secure password storage |
-| 🛡️ **Role-Based Middleware** | Endpoint protection based on user roles |
-| ✅ **Input Validation** | Request payload validation using express-validator |
-| 📂 **File Type Validation** | Whitelist-based file type checking |
-| 📏 **File Size Limits** | Configurable upload size restrictions |
-| 🚫 **Injection Protection** | Parameterized queries and sanitization |
-| 🌐 **CORS Configuration** | Controlled cross-origin resource sharing |
-
----
-
-## 📤 File Upload Specifications
-
-### 📋 Supported File Types
-| Category | Formats |
-|----------|---------|
-| 📄 **Documents** | PDF, DOC, DOCX |
-| 🖼️ **Images** | JPG, JPEG, PNG, GIF |
-| 🎥 **Videos** | MP4, MOV, AVI |
-
-### 📊 Upload Limits
-- **Maximum file size**: 10MB per file (configurable)
-- **Maximum files per submission**: 3 (document + image + video)
-- **Total submission size**: 30MB
-
-### 💾 Storage Strategy
-- Files stored locally in `server/uploads/` directory
-- Unique filename generation to prevent collisions
-- File metadata stored in database with references
-- Organized by submission ID for easy retrieval
-
----
-
-## 🧪 Testing
-
-### Backend Tests
-```bash
-cd server
-npm test
-```
-
-### Frontend Tests
-```bash
-cd client
-npm test
-```
-
----
-
-## 🎯 Workflow Validation Examples
-
-### ✅ Valid Workflows
-```
-✅ Mentor creates assignment → Status: Pending
-✅ Student submits files → Status: Submitted
-✅ Mentor reviews submission → Status: Reviewed
-```
-
-### ❌ Invalid Workflows (Blocked by Backend)
-```
-❌ Student tries to create assignment → 403 Forbidden
-❌ Mentor tries to submit assignment → 403 Forbidden
-❌ Student tries to review submission → 403 Forbidden
-❌ Transition from Pending to Reviewed → 400 Bad Request
+flowgrade/
+│
+├── server/
+│   └── src/
+│       ├── config/                   DB + environment config
+│       ├── controllers/
+│       │   ├── assignment.controller.js
+│       │   ├── auth.controller.js
+│       │   └── submission.controller.js
+│       ├── middleware/
+│       │   ├── auth.middleware.js     JWT verification
+│       │   ├── role.middleware.js     Role-based access guard
+│       │   └── upload.js             Multer config + validation
+│       ├── models/
+│       │   ├── Assignment.js
+│       │   ├── Submission.js
+│       │   └── User.js
+│       ├── routes/
+│       │   ├── assignment.route.js
+│       │   ├── auth.route.js
+│       │   └── submission.route.js
+│       ├── scripts/
+│       │   └── createAdmin.js        First admin seeder
+│       └── server.js                 Entry point
+│
+└── client/
+    └── src/
+        ├── api/
+        │   ├── assignment.api.ts
+        │   ├── auth.api.ts
+        │   ├── axios.ts              Axios instance + interceptors
+        │   └── submission.api.ts
+        ├── components/
+        │   ├── AppLayout.tsx
+        │   ├── Footer.tsx
+        │   ├── Navbar.tsx
+        │   ├── ProtectedRoute.tsx
+        │   └── Sidebar.tsx
+        ├── context/
+        │   └── AuthContext.tsx       Auth state + JWT storage
+        ├── pages/
+        │   ├── AssignmentSubmissions.tsx
+        │   ├── CreateAssignment.tsx
+        │   ├── Login.tsx
+        │   ├── MentorDashboard.tsx
+        │   ├── Register.tsx
+        │   ├── ReviewSubmission.tsx
+        │   ├── StudentDashboard.tsx
+        │   └── SubmitAssignment.tsx
+        ├── App.tsx
+        ├── main.tsx
+        └── index.css
 ```
 
 ---
 
-## 🎯 Design Decisions & Trade-offs
+## ◈ Roadmap
 
-### What This System Prioritizes
-| Priority | Description |
-|----------|-------------|
-| 🔒 **Security First** | Role-based access control at every endpoint |
-| 🗂️ **Data Integrity** | State machine validation for assignment lifecycle |
-| 🏗️ **Clean Architecture** | Separation of concerns with clear layer boundaries |
-| 🚀 **Production-Ready** | JWT auth, proper error handling, logging |
-
-### Current Limitations
-- ⚠️ **Single Mentor Model**: No mentor hierarchy or team assignments
-- ⚠️ **Local Storage**: Files stored locally (not cloud-native by default)
-- ⚠️ **No Real-Time Updates**: Polling-based status checks
-- ⚠️ **Basic Notifications**: No email/push notification system
-- ⚠️ **Simple UI**: Functionality-focused design without advanced UX
-
-### 🔮 Future Enhancement Opportunities
-- ☁️ Cloud storage integration (AWS S3, Google Cloud Storage, Cloudinary)
-- 🔄 Real-time updates using WebSockets
-- 📧 Email notifications for submission events
-- 📊 Advanced analytics dashboard
-- 📦 Batch assignment operations
-- 💬 Comment system for mentor feedback
-- 📝 Assignment templates
-- ⏰ Deadline reminders
+```diff
++ Cloud storage (AWS S3 / Cloudinary) instead of local filesystem
++ Real-time submission updates via WebSockets
++ Email notifications on submission / approval events
++ Rich feedback — mentor comments per submission
++ Assignment templates for recurring tasks
++ Deadline reminders + overdue alerts
++ Advanced analytics dashboard (completion rates, avg review time)
++ Batch assignment operations for multiple students
++ CI/CD pipeline (GitHub Actions + Render/Vercel)
+```
 
 ---
 
-## 📝 Environment Variables Reference
+## ◈ License
 
-### Backend Variables
-| Variable | Description | Required | Default |
-|----------|-------------|:--------:|---------|
-| `PORT` | Server port | ❌ | 5000 |
-| `NODE_ENV` | Environment mode | ❌ | development |
-| `MONGODB_URI` | MongoDB connection string | ✅* | - |
-| `DATABASE_URL` | PostgreSQL connection string | ✅* | - |
-| `CLOUDINARY_CLOUD_NAME` | Cloudinary cloud name | ❌ | - |
-| `CLOUDINARY_API_KEY` | Cloudinary API key | ❌ | - |
-| `CLOUDINARY_API_SECRET` | Cloudinary API secret | ❌ | - |
-| `JWT_SECRET` | Secret for JWT signing | ✅ | - |
-| `JWT_EXPIRE` | Token expiration time | ❌ | 7d |
-| `MAX_FILE_SIZE` | Max upload size in bytes | ❌ | 10485760 |
-| `UPLOAD_PATH` | File storage directory | ❌ | ./uploads |
+```
+Internal Use License
 
-> **Note**: *One database connection string is required (either MongoDB or PostgreSQL)
+Copyright (c) 2025 Mentneo — Devansh Kumar Tiwari
 
-### Frontend Variables
-| Variable | Description | Required | Default |
-|----------|-------------|:--------:|---------|
-| `VITE_API_URL` | Backend API base URL | ✅ | - |
+All rights reserved.
 
-> **Note**: Vite requires environment variables to be prefixed with `VITE_`
+This software and its source code are the exclusive property of Mentneo.
+Unauthorized copying, distribution, modification, or use of this software,
+in whole or in part, without prior written permission from Mentneo is
+strictly prohibited.
 
----
+This software is provided for internal use only and may not be shared,
+sublicensed, or made publicly available in any form.
 
-## 🤝 Contributing
-
-This is an internal **Mentneo** project. For contribution guidelines, please contact the project maintainers.
-
----
-
-## 📄 License
-
-**Internal use only.** All rights reserved by **Mentneo**.
-
----
-
-## 📧 Support
-
-For technical support or questions, please contact:
-- 👨‍💻 **Technical Lead**: [email]
-- 📋 **Project Manager**: [email]
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
 
 ---
 
 <div align="center">
 
-**Built with ❤️ for Mentneo by Devansh Kumar Tiwari**
+```
+╔╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╗
+╠╣   🎓  flowgrade  ·  assign. submit. review. done.             ╠╣
+╚╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╝
+```
 
-[![Made with React](https://img.shields.io/badge/React-18-61dafb?logo=react&logoColor=white)](https://reactjs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178c6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![Node.js](https://img.shields.io/badge/Node.js-16+-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
-[![Express](https://img.shields.io/badge/Express.js-4.x-000000?logo=express&logoColor=white)](https://expressjs.com/)
+Built with ❤️ by **Devansh Kumar Tiwari**
+
+For support — contact the project maintainers or open an issue.
 
 </div>
